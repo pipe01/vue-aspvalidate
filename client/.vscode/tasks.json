@@ -1,0 +1,30 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "babel-watch",
+            "type": "shell",
+            "command": "npx",
+            "args": ["babel", "src", "--out-dir", "dist", "--extensions", "\".ts,.tsx\"", "--watch"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "fileLocation": "absolute",
+                "pattern": [
+                    {
+                        "regexp": "SyntaxError: (.*?): (.*?) \\((\\d+):(\\d+)\\)",
+                        "file": 1,
+                        "message": 2,
+                        "line": 3,
+                        "column": 4
+                    }
+                ],
+                "source": "babel"
+            }
+        }
+    ]
+}

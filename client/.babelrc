@@ -1,0 +1,10 @@
+{
+	"presets": [
+			"@babel/typescript",
+			"@vue/babel-preset-jsx"
+	],
+	"plugins": [
+			"@babel/plugin-proposal-class-properties",
+			"@babel/plugin-proposal-object-rest-spread"
+	]
+}
