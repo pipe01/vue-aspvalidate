@@ -15,6 +15,6 @@ namespace VueAspValidate
         }
 
         public T Attribute<T>() where T : Attribute
-            => Property.GetCustomAttribute<T>();
+            => Property.GetCustomAttribute<T>() ?? throw new InvalidOperationException($"This property does not have an appropiate attribute of type {typeof(T).Name}");
     }
 }
