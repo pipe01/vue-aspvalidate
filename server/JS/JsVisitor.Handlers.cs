@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace VueAspValidate.JS
@@ -7,8 +9,26 @@ namespace VueAspValidate.JS
     {
         public JsVisitor()
         {
-            DotnetToJsMethod[Info.OfMethod<Regex>(nameof(Regex.IsMatch), "String, String")] = new HandlerDelegate(HandleRegexStringString);
-            DotnetToJsMethod[Info.OfPropertyGet<string>("Chars")] = new HandlerDelegate(HandleStringGetChars);
+            DotnetToJsMethod = new Dictionary<MethodInfo, JsMethodHandler>
+            {
+                [Info.OfMethod<string>(nameof(string.StartsWith), "String")] = "startsWith",
+                [Info.OfMethod<string>(nameof(string.EndsWith), "String")] = "endsWith",
+                [Info.OfMethod<string>(nameof(string.Contains), "String")] = "includes",
+
+                [Info.OfMethod<string>(nameof(string.IndexOf), "String")] = "indexOf",
+                [Info.OfMethod<string>(nameof(string.IndexOf), "Char")] = "indexOf",
+                [Info.OfMethod<string>(nameof(string.IndexOf), "String, Int32")] = "indexOf",
+                [Info.OfMethod<string>(nameof(string.IndexOf), "Char, Int32")] = "indexOf",
+
+                [Info.OfMethod<string>(nameof(string.LastIndexOf), "String")] = "lastIndexOf",
+                [Info.OfMethod<string>(nameof(string.LastIndexOf), "Char")] = "lastIndexOf",
+                [Info.OfMethod<string>(nameof(string.LastIndexOf), "String, Int32")] = "lastIndexOf",
+                [Info.OfMethod<string>(nameof(string.LastIndexOf), "Char, Int32")] = "lastIndexOf",
+
+                [Info.OfPropertyGet<string>("Chars")] = new HandlerDelegate(HandleStringGetChars),
+
+                [Info.OfMethod<Regex>(nameof(Regex.IsMatch), "String, String")] = new HandlerDelegate(HandleRegexStringString),
+            };
         }
 
         private void HandleToString(MethodCallExpression node)

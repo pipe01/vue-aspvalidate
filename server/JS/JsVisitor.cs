@@ -36,22 +36,7 @@ namespace VueAspValidate.JS
             public static implicit operator JsMethodHandler(HandlerDelegate func) => new JsMethodHandler(func);
         }
 
-        private readonly IDictionary<MethodInfo, JsMethodHandler> DotnetToJsMethod = new Dictionary<MethodInfo, JsMethodHandler>
-        {
-            [Info.OfMethod<string>(nameof(string.StartsWith), "String")] = "startsWith",
-            [Info.OfMethod<string>(nameof(string.EndsWith), "String")] = "endsWith",
-            [Info.OfMethod<string>(nameof(string.Contains), "String")] = "includes",
-
-            [Info.OfMethod<string>(nameof(string.IndexOf), "String")] = "indexOf",
-            [Info.OfMethod<string>(nameof(string.IndexOf), "Char")] = "indexOf",
-            [Info.OfMethod<string>(nameof(string.IndexOf), "String, Int32")] = "indexOf",
-            [Info.OfMethod<string>(nameof(string.IndexOf), "Char, Int32")] = "indexOf",
-
-            [Info.OfMethod<string>(nameof(string.LastIndexOf), "String")] = "lastIndexOf",
-            [Info.OfMethod<string>(nameof(string.LastIndexOf), "Char")] = "lastIndexOf",
-            [Info.OfMethod<string>(nameof(string.LastIndexOf), "String, Int32")] = "lastIndexOf",
-            [Info.OfMethod<string>(nameof(string.LastIndexOf), "Char, Int32")] = "lastIndexOf"
-        };
+        private readonly IDictionary<MethodInfo, JsMethodHandler> DotnetToJsMethod;
 
         private readonly StringBuilder Builder = new StringBuilder();
 
@@ -66,8 +51,18 @@ namespace VueAspValidate.JS
         protected override Expression VisitBinary(BinaryExpression node)
         {
             base.Visit(node.Left);
-            Builder.Append(GetOperator(node.NodeType));
-            base.Visit(node.Right);
+
+            if (node.NodeType == ExpressionType.ArrayIndex)
+            {
+                Builder.Append("[");
+                base.Visit(node.Right);
+                Builder.Append("]");
+            }
+            else
+            {
+                Builder.Append(GetOperator(node.NodeType));
+                base.Visit(node.Right);
+            }
 
             return node;
         }
@@ -217,16 +212,6 @@ namespace VueAspValidate.JS
         {
             Builder.Append("null");
             return node;
-        }
-
-        protected override Expression VisitIndex(IndexExpression node)
-        {
-            return base.VisitIndex(node);
-        }
-
-        protected override Expression VisitInvocation(InvocationExpression node)
-        {
-            return base.VisitInvocation(node);
         }
 
         protected override Expression VisitMember(MemberExpression node)
