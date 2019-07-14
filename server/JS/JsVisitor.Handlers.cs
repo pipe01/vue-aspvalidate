@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -27,8 +28,31 @@ namespace VueAspValidate.JS
 
                 [Info.OfPropertyGet<string>("Chars")] = new HandlerDelegate(HandleStringGetChars),
 
-                [Info.OfMethod<Regex>(nameof(Regex.IsMatch), "String, String")] = new HandlerDelegate(HandleRegexStringString),
+                [Info.OfMethod<Regex>(nameof(Regex.IsMatch), "String, String")] = new HandlerDelegate(HandleRegexIsMatchStringString),
+                [Info.OfMethod<Regex>(nameof(Regex.IsMatch), "String, String, RegexOptions")] = new HandlerDelegate(HandleRegexIsMatchStringStringRegexOptions),
+                [Info.OfMethod<Regex>(nameof(Regex.Replace), "String, String, String")] = new HandlerDelegate(HandleRegexReplaceStringStringString),
             };
+        }
+
+        private void HandleRegexReplaceStringStringString(MethodCallExpression node)
+        {
+            base.Visit(node.Arguments[0]);
+            Builder.Append(".replace(");
+
+            if (node.Arguments[1] is ConstantExpression constExpr)
+            {
+                Builder.Append("/")
+                       .Append(constExpr.Value)
+                       .Append("/");
+            }
+            else
+            {
+                base.Visit(node.Arguments[1]);
+            }
+
+            Builder.Append(",");
+            base.Visit(node.Arguments[2]);
+            Builder.Append(")");
         }
 
         private void HandleToString(MethodCallExpression node)
@@ -46,13 +70,35 @@ namespace VueAspValidate.JS
             Builder.Append("]");
         }
 
-        private void HandleRegexStringString(MethodCallExpression node)
+        private void HandleRegexIsMatchStringString(MethodCallExpression node)
         {
-            Builder.Append("(");
-            base.Visit(node.Arguments[0]);
-            Builder.Append(".match(");
+            Builder.Append("new RegExp(");
             base.Visit(node.Arguments[1]);
-            Builder.Append(")!=null)");
+            Builder.Append(").test(");
+            base.Visit(node.Arguments[0]);
+            Builder.Append(")");
         }
+
+        private void HandleRegexIsMatchStringStringRegexOptions(MethodCallExpression node)
+        {
+            if (!(node.Arguments[2] is ConstantExpression flagsExpr) || !(flagsExpr.Value is RegexOptions flags))
+                throw new NotSupportedException("Regex flags must be a constant");
+
+            string jsFlags = "g";
+
+            if ((flags & RegexOptions.IgnoreCase) == RegexOptions.IgnoreCase)
+                jsFlags += "i";
+            if ((flags & RegexOptions.Multiline) == RegexOptions.Multiline)
+                jsFlags += "m";
+
+            Builder.Append("new RegExp(");
+            base.Visit(node.Arguments[1]);
+            Builder.Append(",\"")
+                   .Append(jsFlags)
+                   .Append("\").test(");
+            base.Visit(node.Arguments[0]);
+            Builder.Append(")");
+        }
+
     }
 }
