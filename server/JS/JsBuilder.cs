@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Yahoo.Yui.Compressor;
 
-namespace VueAspValidate
+namespace VueAspValidate.JS
 {
     internal class JsBuilder
     {
@@ -37,15 +37,7 @@ namespace VueAspValidate
 
             js.Append("})");
 
-            try
-            {
-                return new JavaScriptCompressor().Compress(js.ToString());
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            return new JavaScriptCompressor().Compress(js.ToString());
         }
 
     }
