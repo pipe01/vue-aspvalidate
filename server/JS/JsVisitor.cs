@@ -74,21 +74,31 @@ namespace VueAspValidate.JS
 
         protected override Expression VisitConditional(ConditionalExpression node)
         {
-            return base.VisitConditional(node);
+            base.Visit(node.Test);
+            Builder.Append("?");
+            base.Visit(node.IfTrue);
+            Builder.Append(":");
+            base.Visit(node.IfFalse);
+
+            return node;
         }
 
         protected override Expression VisitLambda<T>(Expression<T> node)
         {
-            Builder.Append("function(")
-                   .Append(string.Join(",", node.Parameters.Select(o => o.Name)))
-                   .Append("){");
+            if (node.Parameters.Count == 1)
+            {
+                Builder.Append(node.Parameters[0].Name);
+            }
+            else
+            {
+                Builder.Append("(")
+                       .Append(string.Join(",", node.Parameters.Select(o => o.Name)))
+                       .Append(")");
+            }
 
-            if (node.ReturnType != typeof(void))
-                Builder.Append("return ");
+            Builder.Append("=>");
 
             base.Visit(node.Body);
-
-            Builder.Append(";}");
 
             return node;
         }
@@ -203,59 +213,10 @@ namespace VueAspValidate.JS
             throw new NotImplementedException("Operator not implemented");
         }
 
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-
-        protected override Expression VisitBlock(BlockExpression node)
-        {
-            return base.VisitBlock(node);
-        }
-
-        protected override CatchBlock VisitCatchBlock(CatchBlock node)
-        {
-            return base.VisitCatchBlock(node);
-        }
-
-        protected override Expression VisitDebugInfo(DebugInfoExpression node)
-        {
-            return base.VisitDebugInfo(node);
-        }
-
         protected override Expression VisitDefault(DefaultExpression node)
         {
-            return base.VisitDefault(node);
-        }
-
-        protected override Expression VisitDynamic(DynamicExpression node)
-        {
-            return base.VisitDynamic(node);
-        }
-
-        protected override ElementInit VisitElementInit(ElementInit node)
-        {
-            return base.VisitElementInit(node);
-        }
-
-        protected override Expression VisitExtension(Expression node)
-        {
-            return base.VisitExtension(node);
-        }
-
-        protected override Expression VisitGoto(GotoExpression node)
-        {
-            return base.VisitGoto(node);
+            Builder.Append("null");
+            return node;
         }
 
         protected override Expression VisitIndex(IndexExpression node)
@@ -268,26 +229,6 @@ namespace VueAspValidate.JS
             return base.VisitInvocation(node);
         }
 
-        protected override Expression VisitLabel(LabelExpression node)
-        {
-            return base.VisitLabel(node);
-        }
-
-        protected override LabelTarget VisitLabelTarget(LabelTarget node)
-        {
-            return base.VisitLabelTarget(node);
-        }
-
-        protected override Expression VisitListInit(ListInitExpression node)
-        {
-            return base.VisitListInit(node);
-        }
-
-        protected override Expression VisitLoop(LoopExpression node)
-        {
-            return base.VisitLoop(node);
-        }
-
         protected override Expression VisitMember(MemberExpression node)
         {
             base.Visit(node.Expression);
@@ -297,64 +238,32 @@ namespace VueAspValidate.JS
             return node;
         }
 
-        protected override MemberAssignment VisitMemberAssignment(MemberAssignment node)
-        {
-            return base.VisitMemberAssignment(node);
-        }
-
-        protected override MemberBinding VisitMemberBinding(MemberBinding node)
-        {
-            return base.VisitMemberBinding(node);
-        }
-
-        protected override Expression VisitMemberInit(MemberInitExpression node)
-        {
-            return base.VisitMemberInit(node);
-        }
-
-        protected override MemberListBinding VisitMemberListBinding(MemberListBinding node)
-        {
-            return base.VisitMemberListBinding(node);
-        }
-
-        protected override MemberMemberBinding VisitMemberMemberBinding(MemberMemberBinding node)
-        {
-            return base.VisitMemberMemberBinding(node);
-        }
-
         protected override Expression VisitNew(NewExpression node)
         {
-            return base.VisitNew(node);
+            throw new NotSupportedException("You cannot create new instances inside a lambda");
         }
 
         protected override Expression VisitNewArray(NewArrayExpression node)
         {
-            return base.VisitNewArray(node);
-        }
+            Builder.Append("[");
 
-        protected override Expression VisitRuntimeVariables(RuntimeVariablesExpression node)
-        {
-            return base.VisitRuntimeVariables(node);
-        }
+            for (int i = 0; i < node.Expressions.Count; i++)
+            {
+                base.Visit(node.Expressions[i]);
 
-        protected override Expression VisitSwitch(SwitchExpression node)
-        {
-            return base.VisitSwitch(node);
-        }
+                if (i != node.Expressions.Count - 1)
+                    Builder.Append(",");
+            }
 
-        protected override SwitchCase VisitSwitchCase(SwitchCase node)
-        {
-            return base.VisitSwitchCase(node);
-        }
+            Builder.Append("]");
 
-        protected override Expression VisitTry(TryExpression node)
-        {
-            return base.VisitTry(node);
+            return node;
         }
 
         protected override Expression VisitTypeBinary(TypeBinaryExpression node)
         {
-            return base.VisitTypeBinary(node);
+            Builder.Append("true");
+            return node;
         }
     }
 }

@@ -10,11 +10,12 @@ namespace server_tester
     {
         static void Main(string[] args)
         {
-            Expression<Func<string, object>> expr = o => Regex.IsMatch(o, ".*"[0].ToString());
+            string asd = "hello";
+            Expression<Func<string, object>> expr = o => Regex.IsMatch("asd", ".*").ToString();
 
-            var js = Expression2JS.ToJs(expr);
+            var js = ExpressionExtensions.ToJs(expr);
 
-            Console.WriteLine(js);
+            Console.WriteLine($"({js})(0)");
             Console.WriteLine("----------");
             Console.WriteLine(new Beautifier().Beautify(js));
             Console.ReadKey(true);

@@ -28,10 +28,11 @@ namespace VueAspValidate.JS
 
         private void HandleRegexStringString(MethodCallExpression node)
         {
+            Builder.Append("(");
             base.Visit(node.Arguments[0]);
             Builder.Append(".match(");
             base.Visit(node.Arguments[1]);
-            Builder.Append(") != null");
+            Builder.Append(")!=null)");
         }
     }
 }
