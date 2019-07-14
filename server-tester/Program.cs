@@ -10,7 +10,6 @@ namespace server_tester
     {
         static void Main(string[] args)
         {
-            string asd = "hello";
             Expression<Func<string, object>> expr = o => Regex.IsMatch("asd", ".*").ToString();
 
             var js = ExpressionExtensions.ToJs(expr);
