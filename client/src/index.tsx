@@ -39,10 +39,13 @@ export default function VueAspValidate(Vue: typeof _Vue, options?: any): void {
                             var result = val(input.value);
 
                             if (result !== true) {
-                                var errorMsg = (result as string).replace("{0}", input.name);
+                                var errorMsg: string = "Invalid format";
+
+                                if (typeof result === "string")
+                                    errorMsg = (result as string).replace("{0}", input.name);
 
                                 var inputErrors = errors[input.name];
-
+    
                                 if (inputErrors == null)
                                     inputErrors = errors[input.name] = [];
 

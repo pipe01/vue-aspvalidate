@@ -5,6 +5,7 @@ using VueAspValidate.Attributes;
 
 namespace VueAspValidate.Validators
 {
+    [ValidateIfAttribute(typeof(ContainsAllAttribute))]
     public class ContainsAll : IValidator
     {
         public string BuildJS(ValidatorContext context)

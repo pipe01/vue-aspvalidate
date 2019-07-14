@@ -28,14 +28,24 @@ namespace VueAspValidate
 
             services.AddSingleton(conf.Options);
 
-            foreach (var item in typeof(IValidator).Assembly.GetTypes().Where(o => typeof(IValidator).IsAssignableFrom(o) && o != typeof(IValidator)))
+            foreach (var item in typeof(IValidator).Assembly.GetTypes().Where(o => 
+                typeof(IValidator).IsAssignableFrom(o)
+                && o != typeof(IValidator)
+                && o != typeof(Validator<>)
+                && o != typeof(ExpressionValidator<,>)))
             {
                 Predicate<PropertyInfo> pred;
                 var attr = item.GetCustomAttribute<ValidateIfAttributeAttribute>();
+                var @base = item.BaseType.GenericTypeArguments.Length > 0 ? item.BaseType.GetGenericTypeDefinition() : null;
 
                 if (attr != null)
                 {
                     pred = o => o.GetCustomAttribute(attr.AttributeType) != null;
+                }
+                else if (@base == typeof(Validator<>)
+                      || @base == typeof(ExpressionValidator<,>))
+                {
+                    pred = o => o.GetCustomAttribute(item.BaseType.GenericTypeArguments[0]) != null;
                 }
                 else
                 {

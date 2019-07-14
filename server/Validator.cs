@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using VueAspValidate.JS;
 
 namespace VueAspValidate
 {
@@ -31,9 +33,11 @@ namespace VueAspValidate
     {
         protected abstract Expression<Func<TValue, bool>> GetValidationExpression(ValidatorContext context);
 
+        public virtual string ErrorMessage => "Invalid format";
+
         string IValidator.BuildJS(ValidatorContext context)
         {
-            throw new NotImplementedException();
+            return $"return ({GetValidationExpression(context).ToJs()})(value)||{JsonConvert.SerializeObject(ErrorMessage)};";
         }
 
         ValidatorResult IValidator.Check(object value, ValidatorContext context)

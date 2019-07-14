@@ -12,9 +12,9 @@ namespace server_tester
         {
             Expression<Func<string, object>> expr = o => Regex.IsMatch("asd", "\\w", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
-            var js = ExpressionExtensions.ToJs(expr);
+            var js = expr.ToJs();
 
-            Console.WriteLine($"({js})(0)");
+            Console.WriteLine($"( {js} )(0)");
             Console.WriteLine("----------");
             Console.WriteLine(new Beautifier().Beautify(js));
             Console.ReadKey(true);

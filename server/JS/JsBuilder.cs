@@ -37,7 +37,8 @@ namespace VueAspValidate.JS
 
             js.Append("})");
 
-            return new JavaScriptCompressor().Compress(js.ToString());
+            //return new JavaScriptCompressor().Compress(js.ToString());
+            return js.ToString();
         }
 
     }
