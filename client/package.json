@@ -1,9 +1,10 @@
 {
   "name": "vue-aspvalidate",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Client and server side validator for Vue and ASP.NET Core",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "homepage": "https://github.com/pipe01/vue-aspvalidate",
   "scripts": {
     "build-defs": "tsc -p tsconfig.defs.json"
   },
