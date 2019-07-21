@@ -8,7 +8,7 @@ namespace VueAspValidate.Validators
     {
         protected override string BuildJS(ValidatorContext context, MatchesAllAttribute attribute)
         {
-            return $"return [{string.Join(",", attribute.Patterns.Select(o => $"/{o}/"))}].every(o => o.exec(value) != null) ? true : ";
+            return $"value => [{string.Join(",", attribute.Patterns.Select(o => $"/{o}/"))}].every(o => o.exec(value) != null) ? true : ";
         }
 
         protected override ValidatorResult Check(object value, ValidatorContext context, MatchesAllAttribute attribute)

@@ -37,7 +37,7 @@ namespace VueAspValidate
 
         string IValidator.BuildJS(ValidatorContext context)
         {
-            return $"return ({GetValidationExpression(context).ToJs()})(value)||{JsonConvert.SerializeObject(ErrorMessage)};";
+            return $"v => ({GetValidationExpression(context).ToJs()})(v) || {JsonConvert.SerializeObject(ErrorMessage)}";
         }
 
         ValidatorResult IValidator.Check(object value, ValidatorContext context)

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using DouglasCrockford.JsMin;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Yahoo.Yui.Compressor;
 
 namespace VueAspValidate.JS
 {
@@ -29,7 +29,7 @@ namespace VueAspValidate.JS
 
                 foreach (var val in Validators.ForProperty(prop))
                 {
-                    js.Append("(function(value){").Append(val.BuildJS(context)).Append("}),");
+                    js.Append("(").Append(val.BuildJS(context)).Append("),");
                 }
 
                 js.Append("],");
@@ -38,7 +38,7 @@ namespace VueAspValidate.JS
             js.Append("})");
 
             //return new JavaScriptCompressor().Compress(js.ToString());
-            return js.ToString();
+            return new JsMinifier().Minify(js.ToString());
         }
 
     }

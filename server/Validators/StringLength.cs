@@ -10,7 +10,7 @@ namespace VueAspValidate.Validators
         {
             var attr = context.Attribute<StringLengthAttribute>();
 
-            return $"return value.length >= {attr.MinimumLength} && value.length <= {attr.MaximumLength} ? true : '{attr.ErrorMessage ?? $"Must be between {attr.MinimumLength} and {attr.MaximumLength} characters long"}'";
+            return $"value => value.length >= {attr.MinimumLength} && value.length <= {attr.MaximumLength} ? true : '{attr.ErrorMessage ?? $"Must be between {attr.MinimumLength} and {attr.MaximumLength} characters long"}'";
         }
 
         public ValidatorResult Check(object value, ValidatorContext context)
