@@ -11,7 +11,7 @@ namespace VueAspValidate.Validators
         {
             var attr = context.Attribute<RegularExpressionAttribute>();
 
-            return $"return /{attr.Pattern}/.exec(value) != null ? true : '{attr.ErrorMessage ?? "Invalid format"}'";
+            return $"value => /{attr.Pattern}/.exec(value) != null ? true : '{attr.ErrorMessage ?? "Invalid format"}'";
         }
 
         public ValidatorResult Check(object value, ValidatorContext context)

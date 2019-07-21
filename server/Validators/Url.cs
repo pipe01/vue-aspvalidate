@@ -14,7 +14,7 @@ namespace VueAspValidate.Validators
         {
             var attr = context.Attribute<UrlAttribute>();
 
-            return $"return /{JsPattern}/.exec(value) != null ? true : '{attr.ErrorMessage ?? "Invalid URL"}'";
+            return $"value => /{JsPattern}/.exec(value) != null ? true : '{attr.ErrorMessage ?? "Invalid URL"}'";
         }
 
         public ValidatorResult Check(object value, ValidatorContext context)

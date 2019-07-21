@@ -10,7 +10,7 @@ namespace VueAspValidate.Validators
         {
             var attr = context.Attribute<MinLengthAttribute>();
 
-            return $"return value.length >= {attr.Length} ? true : '{attr.ErrorMessage ?? $"Must be more than {attr.Length} characters long"}'";
+            return $"value => value.length >= {attr.Length} ? true : '{attr.ErrorMessage ?? $"Must be more than {attr.Length} characters long"}'";
         }
 
         public ValidatorResult Check(object value, ValidatorContext context)

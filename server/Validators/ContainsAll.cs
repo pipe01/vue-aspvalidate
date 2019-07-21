@@ -13,7 +13,7 @@ namespace VueAspValidate.Validators
             var attr = context.Attribute<ContainsAllAttribute>();
             var arrJson = JsonConvert.SerializeObject(attr.Characters);
 
-            return $"return {arrJson}.every(o => value.indexOf(o) != -1)";
+            return $"value => {arrJson}.every(o => value.indexOf(o) != -1)";
         }
 
         public ValidatorResult Check(object value, ValidatorContext context)
