@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VueAspValidate.JS;
@@ -8,6 +9,8 @@ namespace VueAspValidate
 {
     internal class AspValidateMiddleware
     {
+        private static readonly IDictionary<string, string> FormCache = new Dictionary<string, string>();
+
         private readonly RequestDelegate Next;
         private readonly JsBuilder JsBuilder;
         private readonly AspValidateOptions Options;
@@ -33,8 +36,13 @@ namespace VueAspValidate
                     return;
                 }
 
+                if (!FormCache.TryGetValue(formId, out var formScript))
+                {
+                    FormCache[formId] = formScript = JsBuilder.BuildForModelType(form.ModelType);
+                }
+
                 context.Response.ContentType = "application/javascript";
-                await context.Response.WriteAsync(JsBuilder.BuildForModelType(form.ModelType));
+                await context.Response.WriteAsync(formScript);
                 return;
             }
 

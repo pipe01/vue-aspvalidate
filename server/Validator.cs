@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
@@ -31,7 +31,7 @@ namespace VueAspValidate
 
     public abstract class ExpressionValidator<TAttribute, TValue> : IValidator where TAttribute : Attribute
     {
-        protected abstract Expression<Func<TValue, bool>> GetValidationExpression(ValidatorContext context);
+        protected abstract Expression<Func<TValue, ValidatorResult>> GetValidationExpression(ValidatorContext context);
 
         public virtual string ErrorMessage => "Invalid format";
 
