@@ -12,6 +12,11 @@ namespace VueAspValidate
         string BuildJS(ValidatorContext context);
     }
 
+    public interface IValidatorWithErrorMessage : IValidator
+    {
+        string ErrorMessage { get; }
+    }
+
     public abstract class Validator<TAttribute> : IValidator where TAttribute : Attribute
     {
         protected abstract string BuildJS(ValidatorContext context, TAttribute attribute);
@@ -29,7 +34,7 @@ namespace VueAspValidate
         }
     }
 
-    public abstract class ExpressionValidator<TAttribute, TValue> : IValidator where TAttribute : Attribute
+    public abstract class ExpressionValidator<TAttribute, TValue> : IValidatorWithErrorMessage where TAttribute : Attribute
     {
         protected abstract Expression<Func<TValue, ValidatorResult>> GetValidationExpression(ValidatorContext context);
 
@@ -42,10 +47,10 @@ namespace VueAspValidate
 
         ValidatorResult IValidator.Check(object value, ValidatorContext context)
         {
-            if (!(value is TValue val))
+            if (value != null && !(value is TValue))
                 throw new ArgumentException("Invalid value type", nameof(value));
 
-            return GetValidationExpression(context).Compile()(val);
+            return GetValidationExpression(context).Compile()((TValue)value);
         }
     }
 }

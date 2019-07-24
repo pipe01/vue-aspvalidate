@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -30,7 +30,7 @@ namespace VueAspValidate
 
             foreach (var item in typeof(IValidator).Assembly.GetTypes().Where(o => 
                 typeof(IValidator).IsAssignableFrom(o)
-                && o != typeof(IValidator)
+                && !o.IsInterface
                 && o != typeof(Validator<>)
                 && o != typeof(ExpressionValidator<,>)))
             {

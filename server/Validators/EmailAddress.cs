@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -11,7 +11,7 @@ namespace VueAspValidate.Validators
 
         public override string ErrorMessage => "Invalid email address";
 
-        protected override Expression<Func<string, bool>> GetValidationExpression(ValidatorContext context)
+        protected override Expression<Func<string, ValidatorResult>> GetValidationExpression(ValidatorContext context)
             => value => Regex.IsMatch(value, Pattern);
     }
 }
