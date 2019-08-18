@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -201,8 +201,10 @@ namespace VueAspValidate.JS
                 case ExpressionType.LessThanOrEqual:
                     return "<=";
                 case ExpressionType.And:
+                case ExpressionType.AndAlso:
                     return "&&";
                 case ExpressionType.Or:
+                case ExpressionType.OrElse:
                     return "||";
             }
             throw new NotImplementedException("Operator not implemented");
@@ -216,9 +218,14 @@ namespace VueAspValidate.JS
 
         protected override Expression VisitMember(MemberExpression node)
         {
+            string name = node.Member.Name;
+
+            if (node.Member.DeclaringType == typeof(string) && name == "Length")
+                name = "length";
+
             base.Visit(node.Expression);
             Builder.Append(".")
-                   .Append(node.Member.Name);
+                   .Append(name);
 
             return node;
         }
